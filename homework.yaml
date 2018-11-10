@@ -21,15 +21,15 @@
     - name: NFS Exports
       shell: exportfs | grep /srv/nfs | grep world
 
-- name: Install Packages Required in Bastion
-  hosts: localhost
-  tasks:
-    - name: Make sure required packages are present
-      yum:
-        name:
-          - atomic-openshift-clients
-          - atomic-openshift-utils
-        state: present
+#name: Install Packages Required in Bastion
+#  hosts: localhost
+#  tasks:
+#    - name: Make sure required packages are present
+#      yum:
+#        name:
+#          - atomic-openshift-clients
+#          - atomic-openshift-utils
+#        state: present
 
 - name: Execute the openshift-ansible prerequisites
   import_playbook: /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
