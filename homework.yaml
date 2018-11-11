@@ -104,7 +104,7 @@
     - name: Pull OpenShift Recycler OCI image
       shell: docker pull registry.access.redhat.com/openshift3/ose-recycler:latest
     - name: Retag latest OpenShift Recycler image to be compatible
-      shell: docker tag registry.access.redhat.com/openshift3/ose-recycler:latest registry.access.redhat.com/openshift3/ose-recycler:v3.9.14
+      shell: docker tag registry.access.redhat.com/openshift3/ose-recycler:latest registry.access.redhat.com/openshift3/ose-recycler:v3.11.16
 
 - name: Apply Network Policy Based Project Request
   hosts: localhost
@@ -124,7 +124,8 @@
         replace: "projectRequestTemplate: \"default/project-request\""
         backup: yes
     - name: Restart OpenShift masters
-      shell: systemctl restart atomic-openshift-master-api; systemctl restart atomic-openshift-master-controllers
+      shell: systemctl restart atomic-openshift-master-api atomic-openshift-master-controllers
+      #shell: systemctl restart atomic-openshift-master-api; systemctl restart atomic-openshift-master-controllers
 
 - name: Smoke Test
   hosts: localhost
