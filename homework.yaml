@@ -123,9 +123,11 @@
       shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
     - name: restart master controllers
       shell: ansible masters -m shell -a "/usr/local/bin/master-restart controllers"
+    - name: Sleep for 100 seconds before configuring nodes
+      shell: sleep 100
     - name: reconfigure node_group config maps
       shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
-        
+
     - name: restart the nodes pods
       shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
     - name: restart the opensvswitch pods
