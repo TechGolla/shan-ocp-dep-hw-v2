@@ -115,17 +115,33 @@
       shell: oc project default; oc apply -f project_request.yaml
 
 - name: Set Default Network Policy Clusterwide for New Projects
-  hosts: masters
+  hosts: localhost
   tasks:
     - name: Inject project request template as default project request
-      replace:
-        path: /etc/origin/master/master-config.yaml
-        regexp: "projectRequestTemplate: ''"
-        replace: "projectRequestTemplate: \"default/project-request\""
-        backup: yes
-    - name: Restart OpenShift masters
-      shell: systemctl restart atomic-openshift-master-api atomic-openshift-master-controllers
-      #shell: systemctl restart atomic-openshift-master-api; systemctl restart atomic-openshift-master-controllers
+      shell: ansible masters -m shell -a "sed -i -e 's/openshift-ovs-multitenant/openshift-ovs-networkpolicy/g' /etc/origin/master/master-config.yaml"
+    - name: restart masters
+      shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
+    - name: restart master controllers
+      shell: ansible masters -m shell -a "/usr/local/bin/master-restart controllers"
+    - name: reconfigure node_group config maps
+      shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
+    - name: restart the nodes pods
+      shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
+    - name: restart the opensvswitch pods
+      shell: oc delete pods -n openshift-sdn --all
+
+#- name: Set Default Network Policy Clusterwide for New Projects
+#  hosts: masters
+#  tasks:
+#    - name: Inject project request template as default project request
+#      replace:
+#        path: /etc/origin/master/master-config.yaml
+#        regexp: "projectRequestTemplate: ''"
+#        replace: "projectRequestTemplate: \"default/project-request\""
+#        backup: yes
+#    - name: Restart OpenShift masters
+#      shell: systemctl restart atomic-openshift-master-api atomic-openshift-master-controllers
+#      #shell: systemctl restart atomic-openshift-master-api; systemctl restart atomic-openshift-master-controllers
 
 - name: Smoke Test
   hosts: localhost
