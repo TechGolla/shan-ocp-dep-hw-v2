@@ -176,7 +176,7 @@
   hosts: localhost
   tasks:
     - name: Set CPU request for autoscaler
-      shell: oc project cicd-prod; oc set resources dc tasks --requests=cpu=100m
+      shell: oc project cicd-prod; oc new-app openshift-tasks; oc set resources dc tasks --requests=cpu=100m
     - name: Configure autoscaler for openshift-tasks
       shell: oc project cicd-prod; oc autoscale dc tasks --min 1 --max 4 --cpu-percent=80
 
