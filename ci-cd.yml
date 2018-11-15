@@ -11,8 +11,8 @@
     command: oc new-project cicd --display-name="CI/CD"
   - name: Set serviceaccount status for CI/CD project for dev and stage projects
     command: oc policy add-role-to-group edit system:serviceaccounts:cicd -n {{ item }}
-     with_items:
-     - dev
-     - stage
+    with_items:
+    - dev
+    - stage
   - name: Start application deployment to trigger CI/CD workflow
     command: oc new-app -n cicd -f cicd-template.yaml --param=DEPLOY_CHE=true
