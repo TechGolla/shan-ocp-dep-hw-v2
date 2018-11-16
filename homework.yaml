@@ -21,16 +21,6 @@
     - name: NFS Exports
       shell: exportfs | grep /srv/nfs | grep world
 
-#name: Install Packages Required in Bastion
-#  hosts: localhost
-#  tasks:
-#    - name: Make sure required packages are present
-#      yum:
-#        name:
-#          - atomic-openshift-clients
-#          - atomic-openshift-utils
-#        state: present
-
 - name: Execute the openshift-ansible prerequisites
   import_playbook: /usr/share/ansible/openshift-ansible/playbooks/prerequisites.yml
 
@@ -139,39 +129,17 @@
     - name: Create project for smoke-test
       script: ./scripts/nodejs_mongo_persistent.sh
 
-#- name: Jenkins Setup
-#  hosts: localhost
-#  tasks:
-#    - name: Setup Jenkins with persistent storage
-#      script: ./scripts/jenkins_persistent.sh
-
-#- name: Prepare and Deploy OpenShift Tasks
-#  hosts: localhost
-#  tasks:
-#    - name: Import OpenShift Tasks template to openshift project
-#      shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/OpenShiftDemos/openshift-tasks/master/app-template.yaml
-#    - name: Create create necessary image streams
-#      shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-image-stream.json
-#    - name: Create dev environment and install tasks
-#      shell: oc project cicd-dev; oc new-app openshift-tasks
-#    - name: Setup build configuration for tasks
-#      shell: oc project cicd; oc apply -f jenkins_pipeline.yaml
-#    - name: Trigger initial build pipeline
-#      shell: oc start-build tasks-bc --follow
-
-#- name: HPA Configuration on Production Deployment of openshift-tasks
-#  hosts: localhost
-#  tasks:
-#    - name: Set CPU request for autoscaler
-#      shell: oc project cicd-prod; oc new-app openshift-tasks; oc set resources dc tasks --requests=cpu=100m
-#    - name: Configure autoscaler for openshift-tasks
-#      shell: oc project cicd-prod; oc autoscale dc tasks --min 1 --max 4 --cpu-percent=80
-
 - name: Deploy OpenShift CI/CD Project and begin workflow
   hosts: localhost
   tasks:
-  - name: Run build tools "cicd.sh" and Test pipeline
+  - name: Create Projects for dev, stage and build tools("cicd.sh")
     script: ./scripts/cicd.sh
+  - name: Start application deployment to trigger CI/CD workflow
+    shell: oc new-app -n cicd -f cicd_template.yaml
+  - name: Sleep for 30 seconds build tools in cicd project
+    shell: sleep 30
+  - name: Test Pipeline - oc start-build tasks-pipeline
+    shell: oc start-build tasks-pipeline
 
 - name: Creation of Users for Alpha and Beta Clients
   hosts: masters
@@ -185,19 +153,10 @@
     - name: Groups and labels
       script: ./scripts/set_labels.sh
 
-- name: Setup the Environment for Alpha and Beta Clients
+- name: Setup Multitenant Environment for Alpha and Beta Clients
   hosts: localhost
   tasks:
     - name: Create project for Alpha Corp
       shell: oc new-project alphacorp; oc label namespace alphacorp client=alpha; oc adm policy add-role-to-group edit alphacorp -n alphacorp
     - name: Create project for Beta Corp
       shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
-
-- name: Test Tasks Pipeline
-  hosts: localhost
-  tasks:
-    - name: Sleep for 30 seconds build tools in cicd project
-      shell: sleep 30
-    - name: Create project for Alpha Corp
-      shell: oc start-build tasks-pipeline
-      

@@ -11,5 +11,5 @@ htpasswd -b $pwdFile betty $genericPwd
 #Admin User
 htpasswd -b $pwdFile admin admin
 
-#Adding user 'admin' as cluster admin
+#Adding user 'admin' as cluster admin in addition to marina
 oc adm policy add-cluster-role-to-user cluster-admin admin
