@@ -170,8 +170,8 @@
 - name: Deploy OpenShift CI/CD Project and begin workflow
   hosts: localhost
   tasks:
-  - name: Run build tools playbook "ci-cd.yml" and Test pipeline
-    command: ansible-playbook cicd.yml
+  - name: Run build tools "cicd.sh" and Test pipeline
+    script: ./scripts/cicd.sh
 
 - name: Creation of Users for Alpha and Beta Clients
   hosts: masters
@@ -192,3 +192,12 @@
       shell: oc new-project alphacorp; oc label namespace alphacorp client=alpha; oc adm policy add-role-to-group edit alphacorp -n alphacorp
     - name: Create project for Beta Corp
       shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
+
+- name: Test Tasks Pipeline
+  hosts: localhost
+  tasks:
+    - name: Sleep for 30 seconds build tools in cicd project
+      shell: sleep 30
+    - name: Create project for Alpha Corp
+      shell: oc start-build tasks-pipeline
+      
