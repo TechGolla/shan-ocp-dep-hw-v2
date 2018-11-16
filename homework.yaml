@@ -139,11 +139,11 @@
     - name: Create project for smoke-test
       script: ./scripts/nodejs_mongo_persistent.sh
 
-- name: Jenkins Setup
-  hosts: localhost
-  tasks:
-    - name: Setup Jenkins with persistent storage
-      script: ./scripts/jenkins_persistent.sh
+#- name: Jenkins Setup
+#  hosts: localhost
+#  tasks:
+#    - name: Setup Jenkins with persistent storage
+#      script: ./scripts/jenkins_persistent.sh
 
 #- name: Prepare and Deploy OpenShift Tasks
 #  hosts: localhost
