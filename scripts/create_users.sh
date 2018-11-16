@@ -7,3 +7,9 @@ htpasswd -b $pwdFile andrew $genericPwd
 htpasswd -b $pwdFile amy $genericPwd
 htpasswd -b $pwdFile brian $genericPwd
 htpasswd -b $pwdFile betty $genericPwd
+
+#Admin User
+htpasswd -b $pwdFile admin admin
+
+#Adding user 'admin' as cluster admin
+oc adm policy add-cluster-role-to-user cluster-admin admin

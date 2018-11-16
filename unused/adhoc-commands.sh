@@ -14,3 +14,9 @@ oc new-app -n cicd -f cicd-template.yaml --param=DEPLOY_CHE=true
 #To start the build pipeline
 #oc start-build <pipelineName>
 oc start-build tasks-pipeline
+
+#htpasswd -b <password file> <user> <password>
+htpasswd -b htpasswd.openshift admin admin
+
+#Adding user 'admin' as cluster admin
+oc adm policy add-cluster-role-to-user cluster-admin admin
