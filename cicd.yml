@@ -15,4 +15,5 @@
     - dev
     - stage
   - name: Start application deployment to trigger CI/CD workflow
-    command: oc new-app -n cicd -f cicd-template.yaml --param=DEPLOY_CHE=true
+    command: oc new-app -n cicd -f cicd_template.yaml
+    
