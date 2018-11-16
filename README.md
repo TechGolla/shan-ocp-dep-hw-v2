@@ -1,4 +1,4 @@
-# shan-ocp-dep-hw-v2
+
 # Instructions to do install
 
 cd $HOME
