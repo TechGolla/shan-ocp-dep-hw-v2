@@ -1,5 +1,5 @@
 
-# Instructions to do install
+# Instructions to install
 
 cd $HOME
 
