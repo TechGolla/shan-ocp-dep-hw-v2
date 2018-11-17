@@ -8,5 +8,5 @@ oc new-project stage --display-name="Tasks - Stage"
 oc new-project cicd --display-name="CI/CD"
 
 #Set serviceaccount status for CI/CD project for dev and stage projects
-oc policy add-role-to-group edit system:serviceaccounts:cicd dev
-oc policy add-role-to-group edit system:serviceaccounts:cicd stage
+oc policy add-role-to-group edit system:serviceaccounts:cicd -n dev
+oc policy add-role-to-group edit system:serviceaccounts:cicd -n stage
