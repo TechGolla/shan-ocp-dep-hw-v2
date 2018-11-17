@@ -11,7 +11,9 @@ htpasswd -b $pwdFile betty $genericPwd
 htpasswd -b $pwdFile marina $genericPwd
 
 #Admin User
+echo "Adding User admin"
 htpasswd -b $pwdFile admin admin
 
-#Adding user 'admin' as cluster admin in addition to marina
+#Adding user 'admin' as cluster admin
+echo "Adding user 'admin' as cluster admin"
 oc adm policy add-cluster-role-to-user cluster-admin admin

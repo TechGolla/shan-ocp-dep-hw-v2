@@ -1,0 +1,12 @@
+---
+- name: Deploy OpenShift CI/CD Project and begin workflow
+  hosts: masters
+  tasks:
+  - name: Create Projects for dev, stage and build tools("cicd.sh")
+    script: ./scripts/cicd.sh
+  - name: Start application deployment to trigger CI/CD workflow
+    shell: oc new-app -n cicd -f cicd_template.yaml
+  - name: Sleep for 30 seconds build tools in cicd project
+    shell: sleep 30
+  - name: Test Pipeline - oc start-build tasks-pipeline
+    shell: oc start-build tasks-pipeline
