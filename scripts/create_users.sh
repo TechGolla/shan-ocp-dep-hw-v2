@@ -8,6 +8,8 @@ htpasswd -b $pwdFile amy $genericPwd
 htpasswd -b $pwdFile brian $genericPwd
 htpasswd -b $pwdFile betty $genericPwd
 
+htpasswd -b $pwdFile marina $genericPwd
+
 #Admin User
 htpasswd -b $pwdFile admin admin
 
