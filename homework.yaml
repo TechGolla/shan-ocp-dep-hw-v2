@@ -129,12 +129,6 @@
     - name: Create project for smoke-test
       script: ./scripts/nodejs_mongo_persistent.sh
 
-- name: Deploy OpenShift CI/CD Project and begin workflow
-  hosts: localhost
-  tasks:
-  - name: Create Projects for dev, stage and build tools("cicd.sh")
-    script: ./scripts/cicd.sh
-
 - name: Creation of Users for Alpha and Beta Clients
   hosts: masters
   tasks:
@@ -154,3 +148,9 @@
       shell: oc new-project alphacorp; oc label namespace alphacorp client=alpha; oc adm policy add-role-to-group edit alphacorp -n alphacorp
     - name: Create project for Beta Corp
       shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
+
+- name: Deploy OpenShift CI/CD Project and begin workflow
+  hosts: localhost
+  tasks:
+  - name: Create Projects for dev, stage and build tools("cicd.sh")
+    script: ./scripts/cicd.sh
