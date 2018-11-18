@@ -4,4 +4,5 @@ oc delete project dev
 oc delete project stage
 oc delete project cicd
 
-oc ../scripts/cicd.sh
+chmod +x /root/shan-ocp-dep-hw-v2/scripts/cicd.sh
+sh /root/shan-ocp-dep-hw-v2/scripts/cicd.sh
