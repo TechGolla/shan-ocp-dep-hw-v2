@@ -149,8 +149,8 @@
     - name: Create project for Beta Corp
       shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
 
-- name: Deploy OpenShift CI/CD Project and begin workflow
-  hosts: localhost
-  tasks:
-  - name: Create Projects for dev, stage and build tools("cicd.sh")
-    script: ./scripts/cicd.sh
+#- name: Deploy OpenShift CI/CD Project and begin workflow
+#  hosts: localhost
+#  tasks:
+#  - name: Create Projects for dev, stage and build tools("cicd.sh")
+#    script: ./scripts/cicd.sh
