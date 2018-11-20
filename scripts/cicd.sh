@@ -16,8 +16,8 @@ oc policy add-role-to-group edit system:serviceaccounts:cicd -n stage
 echo "Start application deployment to trigger CI/CD workflow"
 oc new-app -n cicd -f /root/shan-ocp-dep-hw-v2/cicd_template.yaml
 
-echo "Sleep for 60 seconds to allow to build cicd"
-sleep 60s
+echo "Sleep for 5 minutes  to allow to build cicd"
+sleep 5m
 
 echo "Test Pipeline - oc start-build tasks-pipeline"
 oc start-build tasks-pipeline

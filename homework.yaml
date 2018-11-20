@@ -59,8 +59,8 @@
   tasks:
     - name: Make sure you are system:admin
       shell: oc whoami | grep system:admin
-    - name: Delegate marina as cluster-admin
-      shell: oc adm policy add-cluster-role-to-user cluster-admin marina
+    - name: Delegate admin as cluster-admin
+      shell: oc adm policy add-cluster-role-to-user cluster-admin admin
 
 - name: Create PVs for Users
   hosts: nfs
@@ -105,7 +105,7 @@
       shell: oc project default; oc apply -f project_request.yaml
 
 - name: Set Default Network Policy Clusterwide for New Projects
-  hosts: localhost
+  hosts: masters
   tasks:
     - name: Inject project request template as default project request
       replace:
@@ -114,7 +114,7 @@
         replace: "projectRequestTemplate: \"default/project-request\""
         backup: yes
 
-- name: Set Default Network Policy Clusterwide for New Projects
+- name: Restart Masters
   hosts: localhost
   tasks:
     # - name: Set Network Policy
@@ -123,21 +123,52 @@
       shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
     - name: restart master controllers
       shell: ansible masters -m shell -a "/usr/local/bin/master-restart controllers"
-    - name: Sleep for 30 seconds before configuring nodes
-      shell: sleep 30
-    - name: reconfigure node_group config maps
-      shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
+    # - name: Sleep for 30 seconds before configuring nodes
+    #   shell: sleep 30
+    # - name: reconfigure node_group config maps
+    #   shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
 
-    - name: restart the nodes pods
-      shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
-    - name: restart the opensvswitch pods
-      shell: oc delete pods -n openshift-sdn --all
+    # - name: restart the nodes pods
+    #   shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
+    # - name: restart the opensvswitch pods
+    #   shell: oc delete pods -n openshift-sdn --all
 
 - name: Smoke Test
   hosts: localhost
   tasks:
     - name: Create project for smoke-test
       script: ./scripts/nodejs_mongo_persistent.sh
+
+#New script
+- name: Jenkins Setup
+  hosts: localhost
+  tasks:
+    - name: Setup Jenkins with persistent storage
+      script: ./scripts/jenkins_persistent.sh
+
+- name: Prepare and Deploy OpenShift Tasks
+  hosts: localhost
+  tasks:
+    - name: Import OpenShift Tasks template to openshift project
+      shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/OpenShiftDemos/openshift-tasks/master/app-template.yaml
+    - name: Create create necessary image streams
+      shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-image-stream.json
+    - name: Create dev environment and install tasks
+      shell: oc project cicd-dev; oc new-app openshift-tasks
+    - name: Setup build configuration for tasks
+      shell: oc project cicd; oc apply -f jenkins_pipeline.yaml
+    - name: Trigger initial build pipeline
+      shell: oc start-build tasks-bc --follow
+
+- name: HPA Configuration on Production Deployment of openshift-tasks
+  hosts: localhost
+  tasks:
+    - name: Set CPU request for autoscaler
+      shell: oc project cicd-prod; oc set resources dc tasks --requests=cpu=100m
+    - name: Configure autoscaler for openshift-tasks
+      shell: oc project cicd-prod; oc autoscale dc tasks --min 1 --max 4 --cpu-percent=80
+
+#End of New script
 
 - name: Creation of Users for Alpha and Beta Clients
   hosts: masters
@@ -158,11 +189,10 @@
       shell: oc new-project alphacorp; oc label namespace alphacorp client=alpha; oc adm policy add-role-to-group edit alphacorp -n alphacorp
     - name: Create project for Beta Corp
       shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
-    - name: Create project for common
-      shell: oc new-project common; oc label namespace common client=common; oc adm policy add-role-to-group edit common -n common
 
-- name: Deploy OpenShift CI/CD Project and begin workflow
-  hosts: localhost
-  tasks:
-    - name: Create Projects for dev, stage and build tools("cicd.sh")
-      script: ./scripts/cicd.sh
+# OLD PIPELINE
+# - name: Deploy OpenShift CI/CD Project and begin workflow
+#   hosts: localhost
+#   tasks:
+#     - name: Create Projects for dev, stage and build tools("cicd.sh")
+#       script: ./scripts/cicd.sh
