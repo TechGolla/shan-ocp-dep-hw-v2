@@ -96,69 +96,88 @@
     - name: Retag latest OpenShift Recycler image to be compatible
       shell: docker tag registry.access.redhat.com/openshift3/ose-recycler:latest registry.access.redhat.com/openshift3/ose-recycler:v3.11.16
 
-- name: Apply Network Policy Based Project Request
-  hosts: localhost
-  tasks:
-    - name: Label default project to apply network policy
-      shell: oc label namespace default name=default
-    - name: Apply project request in default project
-      shell: oc project default; oc apply -f project_request.yaml
-
-- name: Set Default Network Policy Clusterwide for New Projects
+#Create Users and Labels
+- name: Creation of Users for Alpha and Beta Clients
   hosts: masters
   tasks:
-    - name: Inject project request template as default project request
-      replace:
-        path: /etc/origin/master/master-config.yaml
-        regexp: "projectRequestTemplate: ''"
-        replace: "projectRequestTemplate: \"default/project-request\""
-        backup: yes
+    - name: Creation of users
+      script: ./scripts/create_users.sh
 
-- name: Restart Masters
+- name: Assigning Labels to the Users According to Its Group
   hosts: localhost
   tasks:
-    # - name: Set Network Policy
-    #   shell: ansible masters -m shell -a "sed -i -e 's/openshift-ovs-multitenant/openshift-ovs-networkpolicy/g' /etc/origin/master/master-config.yaml"
-    - name: restart masters
-      shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
-    - name: restart master controllers
-      shell: ansible masters -m shell -a "/usr/local/bin/master-restart controllers"
-    # - name: Sleep for 30 seconds before configuring nodes
-    #   shell: sleep 30
-    # - name: reconfigure node_group config maps
-    #   shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
+    - name: Groups and labels
+      script: ./scripts/set_labels.sh
+#Create Users and Labels - End
 
-    # - name: restart the nodes pods
-    #   shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
-    # - name: restart the opensvswitch pods
-    #   shell: oc delete pods -n openshift-sdn --all
-
+#Smoke Test
 - name: Smoke Test
   hosts: localhost
   tasks:
     - name: Create project for smoke-test
       script: ./scripts/nodejs_mongo_persistent.sh
+#Smoke Test - End
 
-#New script
-- name: Jenkins Setup
-  hosts: localhost
-  tasks:
-    - name: Setup Jenkins with persistent storage
-      script: ./scripts/jenkins_persistent.sh
+#Apply networkpolicy
+# - name: Apply Network Policy Based Project Request
+#   hosts: localhost
+#   tasks:
+#     - name: Label default project to apply network policy
+#       shell: oc label namespace default name=default
+#     - name: Apply project request in default project
+#       shell: oc project default; oc apply -f project_request.yaml
+#
+# - name: Set Default Network Policy Clusterwide for New Projects
+#   hosts: masters
+#   tasks:
+#     - name: Inject project request template as default project request
+#       replace:
+#         path: /etc/origin/master/master-config.yaml
+#         regexp: "projectRequestTemplate: ''"
+#         replace: "projectRequestTemplate: \"default/project-request\""
+#         backup: yes
 
-- name: Prepare and Deploy OpenShift Tasks
-  hosts: localhost
-  tasks:
-    - name: Import OpenShift Tasks template to openshift project
-      shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/OpenShiftDemos/openshift-tasks/master/app-template.yaml
-    - name: Create create necessary image streams
-      shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-image-stream.json
-    - name: Create dev environment and install tasks
-      shell: oc project cicd-dev; oc new-app openshift-tasks
-    - name: Setup build configuration for tasks
-      shell: oc project cicd; oc apply -f jenkins_pipeline.yaml
-    - name: Trigger initial build pipeline
-      shell: oc start-build tasks-bc --follow
+# - name: Restart Masters
+#   hosts: localhost
+#   tasks:
+#     - name: Set Network Policy
+#       shell: ansible masters -m shell -a "sed -i -e 's/openshift-ovs-multitenant/openshift-ovs-networkpolicy/g' /etc/origin/master/master-config.yaml"
+#     - name: restart masters
+#       shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
+#     - name: restart master controllers
+#       shell: ansible masters -m shell -a "/usr/local/bin/master-restart controllers"
+#     - name: Sleep for 30 seconds before configuring nodes
+#       shell: sleep 30
+#     - name: reconfigure node_group config maps
+#       shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
+#
+#     - name: restart the nodes pods
+#       shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
+#     - name: restart the opensvswitch pods
+#       shell: oc delete pods -n openshift-sdn --all
+#End of networkpolicy
+
+#Pipeline Setup - Start
+# - name: Jenkins Setup
+#   hosts: localhost
+#   tasks:
+#     - name: Setup Jenkins with persistent storage
+#       script: ./scripts/jenkins_persistent.sh
+#
+# - name: Prepare and Deploy OpenShift Tasks
+#   hosts: localhost
+#   tasks:
+#     - name: Import OpenShift Tasks template to openshift project
+#       shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/OpenShiftDemos/openshift-tasks/master/app-template.yaml
+#     - name: Create create necessary image streams
+#       shell: oc project openshift; oc apply -f https://raw.githubusercontent.com/jboss-openshift/application-templates/master/eap/eap64-image-stream.json
+#     - name: Create dev environment and install tasks
+#       shell: oc project cicd-dev; oc new-app openshift-tasks
+#     - name: Setup build configuration for tasks
+#       shell: oc project cicd; oc apply -f jenkins_pipeline.yaml
+#     - name: Trigger initial build pipeline
+#       shell: oc start-build tasks-bc --follow
+#Pipeline Setup - End
 
 #===========NEED TO DEBUG THIS PLAY============#
 # Failing at first task as it is not able to find tasks.
@@ -172,25 +191,13 @@
 
 #End of New script
 
-- name: Creation of Users for Alpha and Beta Clients
-  hosts: masters
-  tasks:
-    - name: Creation of users
-      script: ./scripts/create_users.sh
-
-- name: Assigning Labels to the Users According to Its Group
-  hosts: localhost
-  tasks:
-    - name: Groups and labels
-      script: ./scripts/set_labels.sh
-
-- name: Setup Multitenant Environment for Alpha and Beta Clients
-  hosts: localhost
-  tasks:
-    - name: Create project for Alpha Corp
-      shell: oc new-project alphacorp; oc label namespace alphacorp client=alpha; oc adm policy add-role-to-group edit alphacorp -n alphacorp
-    - name: Create project for Beta Corp
-      shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
+# - name: Setup Multitenant Environment for Alpha and Beta Clients
+#   hosts: localhost
+#   tasks:
+#     - name: Create project for Alpha Corp
+#       shell: oc new-project alphacorp; oc label namespace alphacorp client=alpha; oc adm policy add-role-to-group edit alphacorp -n alphacorp
+#     - name: Create project for Beta Corp
+#       shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
 
 # OLD PIPELINE
 # - name: Deploy OpenShift CI/CD Project and begin workflow
