@@ -26,7 +26,7 @@ openshift_release=3.11.16
 
 # Node Groups
 #openshift_node_groups=[{'name': 'node-config-master', 'labels': ['node-role.kubernetes.io/master=true','runtime=docker']}, {'name': 'node-config-infra', 'labels': ['node-role.kubernetes.io/infra=true','runtime=docker']}, {'name': 'node-config-glusterfs', 'labels': ['runtime=docker']}, {'name': 'node-config-compute', 'labels': ['node-role.kubernetes.io/compute=true','runtime=docker'], 'edits': [{ 'key': 'kubeletArguments.pods-per-core','value': ['20']}]}]
-openshift_node_groups=[{'name': 'node-config-master', 'labels': ['node-role.kubernetes.io/master=true','runtime=docker']}, {'name': 'node-config-infra', 'labels': ['node-role.kubernetes.io/infra=true','runtime=docker']}, , {'name': 'node-config-compute-alpha', 'labels': ['node-role.kubernetes.io/compute=true','runtime=docker','client':'alpha'], 'edits': [{ 'key': 'kubeletArguments.pods-per-core','value': ['20']}]}, {'name': 'node-config-compute-beta', 'labels': ['node-role.kubernetes.io/compute=true','runtime=docker', 'client':'beta'], 'edits': [{ 'key': 'kubeletArguments.pods-per-core','value': ['20']}]}, {'name': 'node-config-compute-common', 'labels': ['node-role.kubernetes.io/compute=true','runtime=docker', 'client':'common'], 'edits': [{ 'key': 'kubeletArguments.pods-per-core','value': ['20']}]}]
+openshift_node_groups=[{'name': 'node-config-master', 'labels': ['node-role.kubernetes.io/master=true','runtime=docker']}, {'name': 'node-config-infra', 'labels': ['node-role.kubernetes.io/infra=true','runtime=docker']}, , {'name': 'node-config-alpha', 'labels': ['node-role.kubernetes.io/compute=true','runtime=docker','client=alpha', 'cluster=GUID'], 'edits': [{ 'key': 'kubeletArguments.pods-per-core','value': ['20']}]}, {'name': 'node-config-beta', 'labels': ['node-role.kubernetes.io/compute=true','runtime=docker', 'client=beta', 'cluster=GUID'], 'edits': [{ 'key': 'kubeletArguments.pods-per-core','value': ['20']}]}, {'name': 'node-config-common', 'labels': ['node-role.kubernetes.io/compute=true','runtime=docker', 'client=common', 'cluster=GUID'], 'edits': [{ 'key': 'kubeletArguments.pods-per-core','value': ['20']}]}]
 
 # Default node selectors
 osm_default_node_selector='client=common'
@@ -147,13 +147,6 @@ openshift_cluster_monitoring_operator_install=true
 #openshift_cluster_monitoring_operator_alertmanager_storage_capacity=2Gi
 #openshift_cluster_monitoring_operator_prometheus_storage_enabled=True
 #openshift_cluster_monitoring_operator_alertmanager_storage_enabled=True
-
-# The next two will be enabled in 3.11.z
-# will use deafult storage class until then
-# so set the block storage class as default
-
-# openshift_cluster_monitoring_operator_prometheus_storage_class_name='glusterfs-storage-block'
-# openshift_cluster_monitoring_operator_alertmanager_storage_class_name='glusterfs-storage-block'
 
 ########################
 # Cluster Metrics
@@ -287,19 +280,20 @@ master3.GUID.internal
 
 [nodes]
 ## These are the masters
-master1.GUID.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
-master2.GUID.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
-master3.GUID.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
+master1.GUID.internal openshift_hostname=master1.GUID.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
+master2.GUID.internal openshift_hostname=master2.GUID.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
+master3.GUID.internal openshift_hostname=master3.GUID.internal openshift_node_group_name='node-config-master' openshift_node_problem_detector_install=true
 
 ## These are infranodes
-infranode1.GUID.internal openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
-infranode2.GUID.internal openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
+infranode1.GUID.internal openshift_hostname=infranode1.GUID.internal openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
+infranode2.GUID.internal openshift_hostname=infranode2.GUID.internal openshift_node_group_name='node-config-infra' openshift_node_problem_detector_install=true
 
 ## These are regular nodes
-node1.GUID.internal openshift_node_group_name='node-config-compute-alpha' openshift_node_problem_detector_install=true openshift_node_labels="{'client':'alpha', 'cluster': 'GUID'}"
-node2.GUID.internal openshift_node_group_name='node-config-compute-beta' openshift_node_problem_detector_install=true openshift_node_labels="{'client':'beta', 'cluster': 'GUID'}"
-node3.GUID.internal openshift_node_group_name='node-config-compute-common' openshift_node_problem_detector_install=true openshift_node_labels="{'client':'common', 'cluster': 'GUID'}"
-node4.GUID.internal openshift_node_group_name='node-config-compute-common' openshift_node_problem_detector_install=true openshift_node_labels="{'client':'common', 'cluster': 'GUID'}"
+node1.GUID.internal openshift_hostname=node1.GUID.internal openshift_node_group_name='node-config-alpha' openshift_node_problem_detector_install=true
+node2.GUID.internal openshift_hostname=node2.GUID.internal openshift_node_group_name='node-config-beta' openshift_node_problem_detector_install=true
+node3.GUID.internal openshift_hostname=node3.GUID.internal openshift_node_group_name='node-config-common' openshift_node_problem_detector_install=true
+
+#node4.GUID.internal openshift_hostname=node4.GUID.internal openshift_node_group_name='node-config-common' openshift_node_problem_detector_install=true
 
 [nfs]
-support1.GUID.internal
+support1.GUID.internal openshift_hostname=support1.GUID.internal
