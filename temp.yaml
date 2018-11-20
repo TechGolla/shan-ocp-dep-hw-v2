@@ -1,0 +1,63 @@
+---
+- name: Set Default Network Policy Clusterwide for New Projects
+  hosts: masters
+  tasks:
+    - name: Inject project request template as default project request
+      replace:
+        path: /etc/origin/master/master-config.yaml
+        regexp: "projectRequestTemplate: ''"
+        replace: "projectRequestTemplate: \"default/project-request\""
+        backup: yes
+
+- name: Set Default Network Policy Clusterwide for New Projects
+  hosts: localhost
+  tasks:
+    # - name: Set Network Policy
+    #   shell: ansible masters -m shell -a "sed -i -e 's/openshift-ovs-multitenant/openshift-ovs-networkpolicy/g' /etc/origin/master/master-config.yaml"
+    - name: restart masters
+      shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
+    - name: restart master controllers
+      shell: ansible masters -m shell -a "/usr/local/bin/master-restart controllers"
+    - name: Sleep for 30 seconds before configuring nodes
+      shell: sleep 30
+    - name: reconfigure node_group config maps
+      shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
+
+    - name: restart the nodes pods
+      shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
+    - name: restart the opensvswitch pods
+      shell: oc delete pods -n openshift-sdn --all
+
+- name: Smoke Test
+  hosts: localhost
+  tasks:
+    - name: Create project for smoke-test
+      script: ./scripts/nodejs_mongo_persistent.sh
+
+- name: Creation of Users for Alpha and Beta Clients
+  hosts: masters
+  tasks:
+    - name: Creation of users
+      script: ./scripts/create_users.sh
+
+- name: Assigning Labels to the Users According to Its Group
+  hosts: localhost
+  tasks:
+    - name: Groups and labels
+      script: ./scripts/set_labels.sh
+
+- name: Setup Multitenant Environment for Alpha and Beta Clients
+  hosts: localhost
+  tasks:
+    - name: Create project for Alpha Corp
+      shell: oc new-project alphacorp; oc label namespace alphacorp client=alpha; oc adm policy add-role-to-group edit alphacorp -n alphacorp
+    - name: Create project for Beta Corp
+      shell: oc new-project betacorp; oc label namespace betacorp client=beta; oc adm policy add-role-to-group edit betacorp -n betacorp
+    - name: Create project for common
+      shell: oc new-project common; oc label namespace common client=common; oc adm policy add-role-to-group edit common -n common
+
+- name: Deploy OpenShift CI/CD Project and begin workflow
+  hosts: localhost
+  tasks:
+    - name: Create Projects for dev, stage and build tools("cicd.sh")
+      script: ./scripts/cicd.sh
