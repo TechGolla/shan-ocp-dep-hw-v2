@@ -7,7 +7,8 @@ htpasswd -b $pwdFile andrew $genericPwd
 htpasswd -b $pwdFile amy $genericPwd
 htpasswd -b $pwdFile brian $genericPwd
 htpasswd -b $pwdFile betty $genericPwd
-
+htpasswd -b $pwdFile chris $genericPwd
+htpasswd -b $pwdFile cody $genericPwd
 htpasswd -b $pwdFile marina $genericPwd
 
 #Admin User
