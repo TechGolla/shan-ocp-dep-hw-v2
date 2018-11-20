@@ -160,13 +160,15 @@
     - name: Trigger initial build pipeline
       shell: oc start-build tasks-bc --follow
 
-- name: HPA Configuration on Production Deployment of openshift-tasks
-  hosts: localhost
-  tasks:
-    - name: Set CPU request for autoscaler
-      shell: oc project cicd-prod; oc set resources dc tasks --requests=cpu=100m
-    - name: Configure autoscaler for openshift-tasks
-      shell: oc project cicd-prod; oc autoscale dc tasks --min 1 --max 4 --cpu-percent=80
+#===========NEED TO DEBUG THIS PLAY============#
+# Failing at first task as it is not able to find tasks.
+# - name: HPA Configuration on Production Deployment of openshift-tasks
+#   hosts: localhost
+#   tasks:
+#     - name: Set CPU request for autoscaler
+#       shell: oc project cicd-prod; oc set resources dc tasks --requests=cpu=100m
+#     - name: Configure autoscaler for openshift-tasks
+#       shell: oc project cicd-prod; oc autoscale dc tasks --min 1 --max 4 --cpu-percent=80
 
 #End of New script
 
