@@ -104,21 +104,21 @@
     - name: Apply project request in default project
       shell: oc project default; oc apply -f project_request.yaml
 
-# - name: Set Default Network Policy Clusterwide for New Projects
-#   hosts: masters
-#   tasks:
-#     - name: Inject project request template as default project request
-#       replace:
-#         path: /etc/origin/master/master-config.yaml
-#         regexp: "projectRequestTemplate: ''"
-#         replace: "projectRequestTemplate: \"default/project-request\""
-#         backup: yes
-
 - name: Set Default Network Policy Clusterwide for New Projects
   hosts: localhost
   tasks:
     - name: Inject project request template as default project request
-      shell: ansible masters -m shell -a "sed -i -e 's/openshift-ovs-multitenant/openshift-ovs-networkpolicy/g' /etc/origin/master/master-config.yaml"
+      replace:
+        path: /etc/origin/master/master-config.yaml
+        regexp: "projectRequestTemplate: ''"
+        replace: "projectRequestTemplate: \"default/project-request\""
+        backup: yes
+
+- name: Set Default Network Policy Clusterwide for New Projects
+  hosts: localhost
+  tasks:
+    # - name: Set Network Policy
+    #   shell: ansible masters -m shell -a "sed -i -e 's/openshift-ovs-multitenant/openshift-ovs-networkpolicy/g' /etc/origin/master/master-config.yaml"
     - name: restart masters
       shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
     - name: restart master controllers
