@@ -20,3 +20,67 @@ htpasswd -b htpasswd.openshift admin admin
 
 #Adding user 'admin' as cluster admin
 oc adm policy add-cluster-role-to-user cluster-admin admin
+
+#==========Limit Ranges and HPA=============
+oc new-project test-hpa
+
+#Deploy hello-openshift in the new project:
+oc new-app openshift/hello-openshift:v3.9 -n test-hpa
+oc expose svc hello-openshift
+
+echo '{
+    "kind": "LimitRange",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "limits",
+        "creationTimestamp": null
+    },
+    "spec": {
+        "limits": [
+            {
+                "type": "Pod",
+                "max": {
+                    "cpu": "100m",
+                    "memory": "750Mi"
+                },
+                "min": {
+                    "cpu": "10m",
+                    "memory": "5Mi"
+                }
+            },
+            {
+                "type": "Container",
+                "max": {
+                    "cpu": "100m",
+                    "memory": "750Mi"
+                },
+                "min": {
+                    "cpu": "10m",
+                    "memory": "5Mi"
+                },
+                "default": {
+                    "cpu": "50m",
+                    "memory": "100Mi"
+                }
+            }
+        ]
+    }
+}' | oc create -f - -n test-hpa
+
+#Show Limitrange
+oc get limitrange
+#Display Limitrange
+#oc describe limitrange <limits name>
+oc describe limitrange limits
+
+#Autoscale
+oc autoscale dc/hello-openshift --min 1 --max 5 --cpu-percent=80
+
+#Test autoscale
+oc get hpa/hello-openshift -n test-hpa
+
+#Describe Autoscale
+oc describe hpa/hello-openshift -n test-hpa
+
+#Redeploy with LimitRange
+oc rollout latest hello-openshift -n test-hpa

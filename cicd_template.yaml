@@ -17,6 +17,7 @@ parameters:
 - displayName: STAGE project name
   value: stage
   name: STAGE_PROJECT
+  required: true
 - displayName: PROD project name
   value: prod
   name: PROD_PROJECT
@@ -140,8 +141,7 @@ objects:
                     script {
                       openshift.withCluster() {
                         openshift.withProject(env.PROD_PROJECT) {
-                          openshift.tag("${env.STAGE_PROJECT}/tasks:stage", "${env.PROD_PROJECT}/tasks:prod");
-                          openshift.selector("dc", "tasks").rollout().latest();
+                          openshift.selector("dc", "tasks").rollout();
                         }
                       }
                     }
