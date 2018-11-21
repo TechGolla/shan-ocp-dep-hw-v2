@@ -171,7 +171,6 @@ objects:
                   }
                 }
               }
-            }
           }
       type: JenkinsPipeline
 - apiVersion: v1
