@@ -82,5 +82,5 @@ oc get hpa/hello-openshift -n test-hpa
 #Describe Autoscale
 oc describe hpa/hello-openshift -n test-hpa
 
-#Redeploy with LimitRange
+#Redeploy after LimitRange
 oc rollout latest hello-openshift -n test-hpa

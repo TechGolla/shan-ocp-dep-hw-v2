@@ -11,15 +11,15 @@ metadata:
 message: "Use the following credentials for login:\nJenkins: use your OpenShift credentials\nNexus: admin/admin123\nGogs Git Server: gogs/gogs"
 parameters:
 - displayName: DEV project name
-  value: dev
+  value: tasks-dev
   name: DEV_PROJECT
   required: true
 - displayName: STAGE project name
-  value: stage
+  value: tasks-test
   name: STAGE_PROJECT
   required: true
 - displayName: PROD project name
-  value: prod
+  value: tasks-prod
   name: PROD_PROJECT
   required: true
 - displayName: Ephemeral
@@ -113,7 +113,7 @@ objects:
                     }
                   }
                 }
-                stage('Deploy DEV') {
+                stage('Deploy to DEV') {
                   steps {
                     script {
                       openshift.withCluster() {
@@ -124,7 +124,7 @@ objects:
                     }
                   }
                 }
-                stage('Deploy STAGE') {
+                stage('Deploy to TEST') {
                  steps {
                   script {
                     openshift.withCluster() {
@@ -136,7 +136,7 @@ objects:
                   }
                 }
                }
-                stage('Deploy PROD') {
+                stage('Deploy to PROD') {
                   steps {
                     script {
                       openshift.withCluster() {
