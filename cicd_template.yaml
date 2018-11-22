@@ -136,12 +136,23 @@ objects:
                   }
                 }
                }
-                stage('Deploy to PROD') {
+               stage('Promote to Prod') {
+                steps {
+                 script {
+                   openshift.withCluster() {
+                     openshift.withProject(env.PROD_PROJECT) {
+                         openshift.tag("${env.DEV_PROJECT}/tasks:latest", "${env.PROD_PROJECT}/tasks:prod");
+                     }
+                   }
+                 }
+                 sh "sleep 120";
+               }
+              }
+              stage('Deploy to PROD') {
                   steps {
                     script {
                       openshift.withCluster() {
                         openshift.withProject(env.PROD_PROJECT) {
-                          openshift.tag("${env.DEV_PROJECT}/tasks:latest", "${env.PROD_PROJECT}/tasks:prod");
                           openshift.selector("dc", "tasks").rollout().latest();
                         }
                       }
