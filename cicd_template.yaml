@@ -141,7 +141,8 @@ objects:
                     script {
                       openshift.withCluster() {
                         openshift.withProject(env.PROD_PROJECT) {
-                          openshift.selector("dc", "tasks").rollout();
+                          openshift.tag("${env.DEV_PROJECT}/tasks:latest", "${env.PROD_PROJECT}/tasks:prod");
+                          openshift.selector("dc", "tasks").rollout().latest();
                         }
                       }
                     }
