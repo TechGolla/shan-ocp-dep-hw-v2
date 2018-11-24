@@ -83,6 +83,6 @@ oc set resources dc/tasks --requests=cpu=100m
 
 oc autoscale dc/tasks --min 1 --max 5 --cpu-percent=80
 
-#oc rollout latest tasks -n tasks-prod
+oc rollout latest tasks -n tasks-prod
 
 echo "End of CICD pipeline scripts"

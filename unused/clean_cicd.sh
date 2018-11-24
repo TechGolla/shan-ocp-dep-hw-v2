@@ -16,5 +16,6 @@ git clone https://github.com/TechGolla/shan-ocp-dep-hw-v2
 cd shan-ocp-dep-hw-v2
 chmod 777 *.sh
 chmod 777 ./scripts/*.sh
+chmod 777 ./unused/*.sh
 
 sh /root/shan-ocp-dep-hw-v2/scripts/cicd.sh
