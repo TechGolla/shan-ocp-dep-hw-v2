@@ -7,6 +7,9 @@ oc delete project tasks-test
 oc delete project tasks-prod
 oc delete project cicd
 
+oc delete limitrange tasks-hpa
+
+
 rm -rf shan-ocp-dep-hw-v2/
 
 git clone https://github.com/TechGolla/shan-ocp-dep-hw-v2
