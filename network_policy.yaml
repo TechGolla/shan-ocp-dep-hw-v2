@@ -1,0 +1,39 @@
+---
+#Apply networkpolicy
+- name: Apply Network Policies for Project Request
+  hosts: localhost
+  tasks:
+    - name: Label default project to apply network policy
+      shell: oc label namespace default name=default
+    - name: Apply project request in default project
+      shell: oc project default; oc apply -f project_request.yaml
+
+- name: Set Default Network Policy Clusterwide for New Projects
+  hosts: masters
+  tasks:
+    - name: Inject project request template as default project request
+      replace:
+        path: /etc/origin/master/master-config.yaml
+        regexp: "projectRequestTemplate: ''"
+        replace: "projectRequestTemplate: \"default/project-request\""
+        backup: yes
+
+- name: Restart Masters
+  hosts: localhost
+  tasks:
+    # - name: Set Network Policy
+    #   shell: ansible masters -m shell -a "sed -i -e 's/openshift-ovs-multitenant/openshift-ovs-networkpolicy/g' /etc/origin/master/master-config.yaml"
+    - name: restart masters
+      shell: ansible masters -m shell -a "/usr/local/bin/master-restart api"
+    - name: restart master controllers
+      shell: ansible masters -m shell -a "/usr/local/bin/master-restart controllers"
+    - name: Sleep for 100 seconds
+      shell: sleep 100
+    # - name: reconfigure node_group config maps
+    #   shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
+
+    # - name: restart the nodes pods
+    #   shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
+    # - name: restart the opensvswitch pods
+    #   shell: oc delete pods -n openshift-sdn --all
+#End of networkpolicy
