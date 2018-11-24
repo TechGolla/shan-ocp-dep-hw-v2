@@ -145,7 +145,7 @@ objects:
                      }
                    }
                  }
-                 sh "sleep 120";
+                 sh "sleep 300";
                }
               }
               stage('Deploy to PROD') {
