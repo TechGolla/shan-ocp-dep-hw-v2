@@ -38,46 +38,47 @@ sleep 10m
 #2. Set autoscale for the app under the project.
 #3. rollout the app
 #4. check whether CPU limit needs to set separetly or not like below command
-echo '{
-    "kind": "LimitRange",
-    "apiVersion": "v1",
-    "metadata": {
-        "name": "tasks-hpa",
-        "creationTimestamp": null
-    },
-    "spec": {
-        "limits": [
-            {
-                "type": "Pod",
-                "max": {
-                    "cpu": "1000m",
-                    "memory": "4Gi"
-                },
-                "min": {
-                    "cpu": "100m",
-                    "memory": "512Mi"
-                }
-            },
-            {
-                "type": "Container",
-                "max": {
-                    "cpu": "1000m",
-                    "memory": "4Gi"
-                },
-                "min": {
-                    "cpu": "100m",
-                    "memory": "512Mi"
-                },
-                "default": {
-                    "cpu": "200m",
-                    "memory": "1Gi"
-                }
-            }
-        ]
-    }
-}' | oc create -f - -n tasks-prod
-
 oc project tasks-prod
+# echo '{
+#     "kind": "LimitRange",
+#     "apiVersion": "v1",
+#     "metadata": {
+#         "name": "tasks-hpa",
+#         "creationTimestamp": null
+#     },
+#     "spec": {
+#         "limits": [
+#             {
+#                 "type": "Pod",
+#                 "max": {
+#                     "cpu": "1000m",
+#                     "memory": "4Gi"
+#                 },
+#                 "min": {
+#                     "cpu": "100m",
+#                     "memory": "512Mi"
+#                 }
+#             },
+#             {
+#                 "type": "Container",
+#                 "max": {
+#                     "cpu": "1000m",
+#                     "memory": "4Gi"
+#                 },
+#                 "min": {
+#                     "cpu": "100m",
+#                     "memory": "512Mi"
+#                 },
+#                 "default": {
+#                     "cpu": "200m",
+#                     "memory": "1Gi"
+#                 }
+#             }
+#         ]
+#     }
+# }' | oc create -f - -n tasks-prod
+
+#oc project tasks-prod
 
 oc set resources dc/tasks --requests=cpu=100m
 
