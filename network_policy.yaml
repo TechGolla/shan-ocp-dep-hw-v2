@@ -4,7 +4,7 @@
   hosts: localhost
   tasks:
     - name: Label default project to apply network policy
-      shell: oc label namespace default name=default
+      #shell: oc label namespace default name=default
     - name: Apply project request in default project
       shell: oc project default; oc apply -f project_request.yaml
 
