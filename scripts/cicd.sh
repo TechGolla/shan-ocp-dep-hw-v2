@@ -29,8 +29,8 @@ oc start-build tasks-pipeline
 
 #Autoscalling without using limitrange
 echo "HPA for Production Environment"
-echo "Sleep for 5 minutes  to allow to deploy to Prod"
-sleep 5m
+echo "Sleep for 10 minutes  to allow to deploy to Prod"
+sleep 10m
 
 #================================================================
 #Autoscalling without using limitrange (eg: tasks-hpa)
