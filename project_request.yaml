@@ -43,20 +43,20 @@ objects:
           memory: "4Gi"
         min:
           cpu: "100m"
-          memory: "1Gi"
+          memory: "512Mi"
       - type: "Container"
         max:
           cpu: "2"
           memory: "4Gi"
         min:
           cpu: "100m"
-          memory: "1Gi"
+          memory: "512Mi"
         default:
-          cpu: "200m"
-          memory: "1Gi"
+          cpu: "300m"
+          memory: "2Gi"
         defaultRequest:
           cpu: "100m"
-          memory: "1Gi"
+          memory: "512Mi"
         maxLimitRequestRatio:
           cpu: "10"
 - apiVersion: project.openshift.io/v1
