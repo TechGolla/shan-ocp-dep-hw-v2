@@ -58,7 +58,7 @@ objects:
           cpu: "100m"
           memory: "512Mi"
         maxLimitRequestRatio:
-          cpu: "10"
+          cpu: "20"
 - apiVersion: project.openshift.io/v1
   kind: Project
   metadata:
