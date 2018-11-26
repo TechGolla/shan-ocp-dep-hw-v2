@@ -182,8 +182,8 @@ echo '{
                     "memory": "4Gi"
                 },
                 "min": {
-                    "cpu": "50m",
-                    "memory": "256Mi"
+                    "cpu": "500m",
+                    "memory": "1Gi"
                 }
             },
             {
@@ -193,12 +193,12 @@ echo '{
                     "memory": "4Gi"
                 },
                 "min": {
-                    "cpu": "50m",
-                    "memory": "256Mi"
+                    "cpu": "100m",
+                    "memory": "512Mi"
                 },
                 "default": {
                     "cpu": "100m",
-                    "memory": "512Mi"
+                    "memory": "1Gi"
                 }
             }
         ]
@@ -206,7 +206,7 @@ echo '{
 }' | oc create -f - -n tasks-prod
 
 oc project tasks-prod
-oc set resources dc/tasks --requests=cpu=100m
+#oc set resources dc/tasks --requests=cpu=100m
 oc autoscale dc/tasks --min 1 --max 5 --cpu-percent=80
 oc rollout latest tasks -n tasks-prod
 

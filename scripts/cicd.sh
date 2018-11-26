@@ -54,8 +54,8 @@ echo '{
                     "memory": "4Gi"
                 },
                 "min": {
-                    "cpu": "50m",
-                    "memory": "256Mi"
+                    "cpu": "200m",
+                    "memory": "2Gi"
                 }
             },
             {
@@ -65,12 +65,12 @@ echo '{
                     "memory": "4Gi"
                 },
                 "min": {
-                    "cpu": "50m",
-                    "memory": "256Mi"
+                    "cpu": "100m",
+                    "memory": "1Gi"
                 },
                 "default": {
-                    "cpu": "100m",
-                    "memory": "512Mi"
+                    "cpu": "200m",
+                    "memory": "2Gi"
                 }
             }
         ]

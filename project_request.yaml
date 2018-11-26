@@ -34,29 +34,29 @@ objects:
 - apiVersion: "v1"
   kind: "LimitRange"
   metadata:
-    name: "core-resource-limits" 
+    name: "core-resource-limits"
   spec:
     limits:
       - type: "Pod"
         max:
-          cpu: "2" 
-          memory: "1Gi" 
+          cpu: "2"
+          memory: "4Gi"
         min:
-          cpu: "200m" 
-          memory: "6Mi" 
+          cpu: "300m"
+          memory: "1Gi"
       - type: "Container"
         max:
-          cpu: "2" 
-          memory: "1Gi" 
+          cpu: "2"
+          memory: "4Gi"
         min:
-          cpu: "100m" 
-          memory: "4Mi" 
+          cpu: "100m"
+          memory: "1Gi"
         default:
-          cpu: "300m" 
-          memory: "200Mi" 
+          cpu: "200m"
+          memory: "1Gi"
         defaultRequest:
-          cpu: "200m" 
-          memory: "100Mi" 
+          cpu: "100m"
+          memory: "1Gi"
         maxLimitRequestRatio:
           cpu: "10"
 - apiVersion: project.openshift.io/v1

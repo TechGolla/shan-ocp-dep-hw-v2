@@ -36,4 +36,7 @@
     #   shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
     # - name: restart the opensvswitch pods
     #   shell: oc delete pods -n openshift-sdn --all
+    - name: Networkpolicy, roles and resource limits have been applied
+      shell: echo "Networkpolicy, roles and resource limits have been applied"
+
 #End of networkpolicy
