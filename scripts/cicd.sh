@@ -18,6 +18,8 @@ oc policy add-role-to-group edit system:serviceaccounts:cicd -n tasks-test
 oc policy add-role-to-group edit system:serviceaccounts:cicd -n tasks-prod
 
 echo "Start application deployment to trigger CI/CD workflow"
+#Testing with Jenkins PVC - by creating app upfront.
+oc new-app jenkins-persistent
 oc new-app -n cicd -f /root/shan-ocp-dep-hw-v2/cicd_template.yaml
 
 echo "Sleep for 5 minutes  to allow to build cicd"
