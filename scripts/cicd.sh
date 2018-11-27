@@ -10,19 +10,19 @@ echo "Create Prod project"
 oc new-project tasks-prod --display-name="Tasks - Prod"
 
 echo "Create CI/CD project"
-oc new-project cicd --display-name="CI/CD"
+oc new-project cicd-dev --display-name="CI/CD"
 
 echo "Set serviceaccount status for CI/CD project for dev, stage and prod projects"
-oc policy add-role-to-group edit system:serviceaccounts:cicd -n tasks-dev
-oc policy add-role-to-group edit system:serviceaccounts:cicd -n tasks-test
-oc policy add-role-to-group edit system:serviceaccounts:cicd -n tasks-prod
+oc policy add-role-to-group edit system:serviceaccounts:cicd-dev -n tasks-dev
+oc policy add-role-to-group edit system:serviceaccounts:cicd-dev -n tasks-test
+oc policy add-role-to-group edit system:serviceaccounts:cicd-dev -n tasks-prod
 
 echo "Start application deployment to trigger CI/CD workflow"
 #Testing with Jenkins PVC - by creating app upfront.
 oc new-app jenkins-persistent
-oc new-app -n cicd -f /root/shan-ocp-dep-hw-v2/cicd_template.yaml
+oc new-app -n cicd-dev -f /root/shan-ocp-dep-hw-v2/cicd_template.yaml
 
-echo "Sleep for 5 minutes  to allow to build cicd"
+echo "Sleep for 5 minutes  to allow to build cicd-dev"
 sleep 5m
 
 echo "Test Pipeline - oc start-build tasks-pipeline"

@@ -6,8 +6,8 @@ labels:
 metadata:
   annotations:
     iconClass: icon-jenkins
-    tags: instant-app,jenkins,gogs,nexus,cicd
-  name: cicd
+    tags: instant-app,jenkins,gogs,nexus,cicd-dev
+  name: cicd-dev
 message: "Use the following credentials for login:\nJenkins: use your OpenShift credentials admin/admin\nNexus: admin/admin123\nGogs Git Server: gogs/gogs"
 parameters:
 - displayName: DEV project name
