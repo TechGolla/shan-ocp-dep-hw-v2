@@ -41,44 +41,44 @@ sleep 10m
 #3. rollout the app
 #4. check whether CPU limit needs to set separetly or not like below command
 oc project tasks-prod
-# echo '{
-#     "kind": "LimitRange",
-#     "apiVersion": "v1",
-#     "metadata": {
-#         "name": "tasks-hpa",
-#         "creationTimestamp": null
-#     },
-#     "spec": {
-#         "limits": [
-#             {
-#                 "type": "Pod",
-#                 "max": {
-#                     "cpu": "1000m",
-#                     "memory": "4Gi"
-#                 },
-#                 "min": {
-#                     "cpu": "100m",
-#                     "memory": "512Mi"
-#                 }
-#             },
-#             {
-#                 "type": "Container",
-#                 "max": {
-#                     "cpu": "1000m",
-#                     "memory": "4Gi"
-#                 },
-#                 "min": {
-#                     "cpu": "100m",
-#                     "memory": "512Mi"
-#                 },
-#                 "default": {
-#                     "cpu": "200m",
-#                     "memory": "1Gi"
-#                 }
-#             }
-#         ]
-#     }
-# }' | oc create -f - -n tasks-prod
+echo '{
+    "kind": "LimitRange",
+    "apiVersion": "v1",
+    "metadata": {
+        "name": "tasks-hpa",
+        "creationTimestamp": null
+    },
+    "spec": {
+        "limits": [
+            {
+                "type": "Pod",
+                "max": {
+                    "cpu": "2",
+                    "memory": "4Gi"
+                },
+                "min": {
+                    "cpu": "100m",
+                    "memory": "512Mi"
+                }
+            },
+            {
+                "type": "Container",
+                "max": {
+                    "cpu": "2",
+                    "memory": "4Gi"
+                },
+                "min": {
+                    "cpu": "100m",
+                    "memory": "512Mi"
+                },
+                "default": {
+                    "cpu": "300m",
+                    "memory": "2Gi"
+                }
+            }
+        ]
+    }
+}' | oc create -f - -n tasks-prod
 
 #oc project tasks-prod
 
@@ -86,6 +86,8 @@ oc set resources dc/tasks --requests=cpu=100m
 
 oc autoscale dc/tasks --min 1 --max 5 --cpu-percent=80
 
+#There is no need rollout if there is any change in config such
+# as resources etc
 oc rollout latest tasks -n tasks-prod
 
 echo "End of CICD pipeline scripts"

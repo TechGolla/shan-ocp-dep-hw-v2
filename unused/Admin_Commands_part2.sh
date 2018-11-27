@@ -2,6 +2,12 @@
 #Get hpa on a project
 oc get hpa
 
+#Delete HPA for project
+oc delete hpa tasks
+
+#delete limitrange
+oc delete limitrange tasks-hpa
+
 #Get Pvc
 oc get pvc
 
