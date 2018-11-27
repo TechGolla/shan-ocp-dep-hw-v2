@@ -126,6 +126,11 @@
       script: ./scripts/cicd.sh
 #Pipeline Setup - End
 
+#Apply networkpolicy
+- name: Apply networkpolicy
+  import_playbook: /root/shan-ocp-dep-hw-v2/network_policy.yaml
+#End of networkpolicy
+
 #Multitenant Environment - Start
 - name: Setup Multitenant Environment for Alpha and Beta Clients
   hosts: localhost
@@ -137,8 +142,3 @@
     - name: Create project for common
       shell: oc new-project common; oc label namespace common client=common; oc adm policy add-role-to-group edit common -n common
 #Multitenant Environment - End
-
-#Apply networkpolicy
-# - name: Apply networkpolicy
-#   import_playbook: /root/shan-ocp-dep-hw-v2/network_policy.yaml
-#End of networkpolicy
