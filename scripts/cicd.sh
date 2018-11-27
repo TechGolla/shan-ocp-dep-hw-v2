@@ -74,6 +74,10 @@ echo '{
                 "default": {
                     "cpu": "300m",
                     "memory": "2Gi"
+                },
+                "defaultRequest": {
+                    "cpu": "100m",
+                    "memory": "512Mi"
                 }
             }
         ]
@@ -87,7 +91,7 @@ oc set resources dc/tasks --requests=cpu=100m
 oc autoscale dc/tasks --min 1 --max 5 --cpu-percent=80
 
 #There is no need rollout if there is any change in config such
-# as resources etc
-oc rollout latest tasks -n tasks-prod
+# as resources etc but limitrange alone needs rollout
+#oc rollout latest tasks -n tasks-prod
 
 echo "End of CICD pipeline scripts"
