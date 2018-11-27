@@ -8,7 +8,7 @@ metadata:
     iconClass: icon-jenkins
     tags: instant-app,jenkins,gogs,nexus,cicd
   name: cicd
-message: "Use the following credentials for login:\nJenkins: use your OpenShift credentials\nNexus: admin/admin123\nGogs Git Server: gogs/gogs"
+message: "Use the following credentials for login:\nJenkins: use your OpenShift credentials admin/admin\nNexus: admin/admin123\nGogs Git Server: gogs/gogs"
 parameters:
 - displayName: DEV project name
   value: tasks-dev
@@ -49,7 +49,7 @@ objects:
   kind: BuildConfig
   metadata:
     annotations:
-      pipeline.alpha.openshift.io/uses: '[{"name": "jenkins", "namespace": "", "kind": "DeploymentConfig"}]'
+      pipeline.alpha.openshift.io/uses: '[{"name": "jenkins-persistent", "namespace": "", "kind": "DeploymentConfig"}]'
     labels:
       app: cicd-pipeline
       name: cicd-pipeline
