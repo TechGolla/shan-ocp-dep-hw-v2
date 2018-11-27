@@ -33,8 +33,8 @@
     # - name: reconfigure node_group config maps
     #   shell: oc get cm -n openshift-node -o yaml | sed -e 's/ovs-multitenant/ovs-networkpolicy/' | oc apply -f -
 
-    # - name: restart the nodes pods
-    #   shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
+    - name: restart the nodes pods
+      shell: ansible nodes -m shell -a "systemctl restart atomic-openshift-node"
     # - name: restart the opensvswitch pods
     #   shell: oc delete pods -n openshift-sdn --all
     - name: Networkpolicy, roles and resource limits have been applied
