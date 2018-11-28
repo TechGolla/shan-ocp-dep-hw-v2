@@ -1,14 +1,20 @@
 
-# Instructions to install
+Quick Start
 
-cd $HOME
+With the assumption that the infrastructure layer has been set up and configured according to the information in mentioned in above sections, the installation can be invoked by following the steps below:
 
-rm -rf shan-ocp-dep-hw-v2/
+1.	Login to Bastion Host using Putty using credentials (key).
 
-git clone https://github.com/TechGolla/shan-ocp-dep-hw-v2
+    Host: - bastion.$GUID.example.opentlc.com
 
-cd shan-ocp-dep-hw-v2
+2.	Change to root user
+    sudo –i
 
-chmod 777 *.sh
+3.	Clone the playbooks
 
-./install.sh
+    cd $HOME
+    git clone https://github.com/TechGolla/shan-ocp-dep-hw-v2.git
+
+4.	Execute below commands to start installation :
+
+    cd shan-ocp-dep-hw-v2; chmod 777 *.sh; ./install.sh
