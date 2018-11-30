@@ -17,4 +17,4 @@ With the assumption that the infrastructure layer has been set up and configured
 
 4.	Execute below commands to start installation :
 
-    ansible-playbook -v -f 20 homework.yaml
+    ansible-playbook -v -f 20 /root/shan-ocp-dep-hw-v2/homework.yaml
