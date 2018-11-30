@@ -13,6 +13,7 @@ With the assumption that the infrastructure layer has been set up and configured
 3.	Clone the playbooks
 
     cd $HOME
+    
     git clone https://github.com/TechGolla/shan-ocp-dep-hw-v2.git
 
 4.	Execute below commands to start installation :
