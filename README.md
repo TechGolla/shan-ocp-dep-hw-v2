@@ -1,7 +1,7 @@
 
 Quick Start
 
-With the assumption that the infrastructure layer has been set up and configured according to the information in mentioned in above sections, the installation can be invoked by following the steps below:
+With the assumption that the infrastructure layer has been set up and configured according openshift system requirements, the installation can be invoked by following the steps below:
 
 1.	Login to Bastion Host using Putty using credentials (key).
 
@@ -18,4 +18,3 @@ With the assumption that the infrastructure layer has been set up and configured
 4.	Execute below commands to start installation :
 
     ansible-playbook -v -f 20 homework.yaml
-    
