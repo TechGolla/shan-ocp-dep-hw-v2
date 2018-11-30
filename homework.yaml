@@ -66,7 +66,7 @@
   hosts: nfs
   tasks:
     - name: Create directories for PVs
-      script: ./scripts/create_pvs.sh
+      script: /root/shan-ocp-dep-hw-v2/scripts/create_pvs.sh
     - name: Restarting NFS Server...
       shell: systemctl restart nfs-server
 
@@ -74,13 +74,13 @@
   hosts: localhost
   tasks:
     - name: Create YAML definition files for 5GiB PVs
-      script: ./scripts/pvs_5Gsize.sh
+      script: /root/shan-ocp-dep-hw-v2/scripts/pvs_5Gsize.sh
 
 - name: Create 25 Definitions Files for PVs 10G Size
   hosts: localhost
   tasks:
     - name: Create YAML definition files for 10GiB PVs
-      script: ./scripts/pvs_10Gsize.sh
+      script: /root/shan-ocp-dep-hw-v2/scripts/pvs_10Gsize.sh
 
 - name: Create All PVs from Definitions Files
   hosts: localhost
@@ -101,13 +101,13 @@
   hosts: masters
   tasks:
     - name: Creation of users
-      script: ./scripts/create_users.sh
+      script: /root/shan-ocp-dep-hw-v2/scripts/create_users.sh
 
 - name: Assigning Labels to the Users According to Its Group
   hosts: localhost
   tasks:
     - name: Groups and labels
-      script: ./scripts/set_labels.sh
+      script: /root/shan-ocp-dep-hw-v2/scripts/set_labels.sh
 #Create Users and Labels - End
 
 #Smoke Test
@@ -115,7 +115,7 @@
   hosts: localhost
   tasks:
     - name: Create project for smoke-test
-      script: ./scripts/nodejs_mongo_persistent.sh
+      script: /root/shan-ocp-dep-hw-v2/scripts/nodejs_mongo_persistent.sh
 #Smoke Test - End
 
 #Pipeline Setup - Start
@@ -123,7 +123,7 @@
   hosts: localhost
   tasks:
     - name: Create Projects for dev, stage and build tools("cicd.sh")
-      script: ./scripts/cicd.sh
+      script: /root/shan-ocp-dep-hw-v2/scripts/cicd.sh
 #Pipeline Setup - End
 
 #Apply networkpolicy
